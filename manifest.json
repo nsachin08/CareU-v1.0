@@ -27,7 +27,6 @@
         "tabs",
         "activeTab",
         "declarativeContent",  
-        "alarms", 
         "storage",
         "notifications",
         "contextMenus",
