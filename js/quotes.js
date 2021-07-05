@@ -6,8 +6,6 @@ function getQuote() {
   fetch("https://api.quotable.io/random")
     .then((response) => response.json())
     .then((data) => {
-      var x = data;
-      console.log(x);
       var y = document.getElementById("quote");
       y.innerHTML = data.content;
       var z = document.getElementById("author");

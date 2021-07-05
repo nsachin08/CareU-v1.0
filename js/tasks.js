@@ -3,15 +3,13 @@
 
   $(document).ready(function () {
     $.fn.ToDoList = function (options) {
-      var self = this,
-        $self = $(this),
+      var $self = $(this),
         list = $self.find(".task-list"),
         ToDoList,
-        i; //-- counter
+        i;
 
       chrome.storage.sync.get("ToDo", function (response) {
         if (Object.keys(response).length === 0) {
-          //-- reset the counter
           ToDoList = { counter: 1 };
           uploadToDo();
         } else if (!!response.ToDo) {
@@ -25,18 +23,14 @@
           }
         }
 
-        i = ToDoList.counter; //-- counter
+        i = ToDoList.counter;
       });
 
-      //--- FUNCTIONS
-
-      //--func. upload ToDoList to localstorage
       function uploadToDo() {
-        // localStorage.setItem( 'ToDo', JSON.stringify(ToDoList) );
         chrome.storage.sync.set({ ToDo: ToDoList }, function () {});
       }
 
-      //--func. remove task from ToDoList
+      /* remove task from ToDoList */
       function removeTask(task) {
         var id = task.find(".task-title").attr("id").slice(5);
         task.slideUp(500, function () {
@@ -48,7 +42,7 @@
         changeTaskLeft();
       }
 
-      //--func. change task status
+      /* change task status */
       function changeStatusTask(task) {
         var id = task.find(".task-title").attr("id").slice(5);
         var status = ToDoList["task-" + id].done;
@@ -58,27 +52,7 @@
         uploadToDo();
       }
 
-      //--func. change task-title
-      function changeValueTask(task, newValue) {
-        var id = task.find(".task-title").attr("id").slice(5);
-        var value = ToDoList["task-" + id].value;
-        if (value != newValue) {
-          ToDoList["task-" + id].value = newValue;
-        }
-        uploadToDo();
-      }
-      //--func. save edited task and remove focus
-      function saveEditedTask(task) {
-        var newValue = task.find(".task-title").text();
-
-        changeValueTask(task, newValue);
-        list
-          .find(".task-title")
-          .attr("contenteditable", "false")
-          .removeClass("editing");
-      }
-
-      //--func. fill html list
+      /*  fill html list */
       function fillList() {
         var keys = Object.keys(ToDoList);
         for (var j = 0; j < keys.length; j++) {
@@ -90,7 +64,7 @@
           addListTask(title, id, status);
         }
       }
-      //--func. create task
+      /* create task */
       function addListTask(title, id, status) {
         var text = $("<span></span>")
           .attr({
@@ -125,7 +99,7 @@
         );
       }
 
-      //--func. count tasks in ToDoList
+      /* count tasks in ToDoList */
       function countTasks() {
         var keys = Object.keys(ToDoList);
         var a = 0;
@@ -139,7 +113,7 @@
         return { total: a, done: b };
       }
 
-      //--func. get gradient from 3 colors
+      /* progress colors */
       function colorProgress(r1, r2, r3, g1, g2, g3, b1, b2, b3, persent) {
         function pal(c1, c2) {
           return Math.floor((c2 - c1) * (persent / 100)) + c1;
@@ -153,7 +127,7 @@
         }
       }
 
-      //--func. fill task progress-bar
+      /* task progress-bar */
       function changeTaskLeft() {
         var total = countTasks().total,
           done = countTasks().done;
@@ -195,9 +169,7 @@
         });
       }
 
-      //--- EVENTS
-
-      //-- create new task
+      /* create new task */
       $self.find("#task-submit").live("click", function (e) {
         e.preventDefault();
         var typedTask = $self.find("#task-input").val();
@@ -214,7 +186,7 @@
         $self.find("#task-input").val("").focus();
       });
 
-      //-- edit task
+      /* edit task */
       list.find(".edit").live("click", function (e) {
         e.preventDefault();
         var title = $(this).siblings(".task-title");
@@ -238,7 +210,7 @@
         }
       });
 
-      //-- delete task
+      /* delete task */
       list.find(".remove").live("click", function (e) {
         e.preventDefault();
         var task = $(this).parent();
@@ -247,7 +219,7 @@
         changeTaskLeft();
       });
 
-      //-- done task
+      /* done task */
       list.find(".toggle").live("click", function (e) {
         var task = $(this).parent();
         task.toggleClass("done");
@@ -256,7 +228,7 @@
         changeTaskLeft();
       });
 
-      //-- delete done tasks
+      /* delete done tasks */
       $self.find(".remove-checked").live("click", function (e) {
         e.preventDefault();
         $self.find(".done").each(function () {
@@ -269,7 +241,7 @@
 
     $(".ToDo").ToDoList();
 
-    //--Budge Text
+    /*Notification icon*/
     chrome.browserAction.setBadgeBackgroundColor({ color: [255, 0, 0, 255] });
   });
 })(jQuery);
